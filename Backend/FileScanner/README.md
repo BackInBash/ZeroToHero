@@ -15,4 +15,5 @@ FileScanner.exe -p C:\Path\To\Index -c
 
 ## Output
 `output.json` All File status from given Repository
-`mussmatch.json` All Files with hash mismatch (corrupt or missing Files)
+
+`mismatch.json` All Files with hash mismatch (corrupt or missing Files)
