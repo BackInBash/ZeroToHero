@@ -24,8 +24,6 @@ namespace MusicIndexer
         {
             foreach (Track i in list)
             {
-                WebClient http = new WebClient();
-                http.Headers.Add("Content-Type", "application/json");
                 string json = string.Empty;
                 try
                 {
