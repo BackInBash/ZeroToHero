@@ -7,5 +7,6 @@ Enthält alle von mir erstellten learning by doing Projekte, für die keine weit
 ## Backend
 ### C#
 + [Music Indexer](/Backend/MusicIndexer)
++ [File Scanner](/Backend/FileScanner)
 ### C
 + [File Indexer](/Backend/FileIndexer)
