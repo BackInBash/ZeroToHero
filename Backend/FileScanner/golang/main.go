@@ -19,8 +19,15 @@ type cliArgs struct {
 
 // JFile Object
 type JFile struct {
-	path string
-	hash string
+	Path string `json:"path"`
+	Hash string `json:"hash"`
+}
+
+// JFile Object
+type JFileMismatch struct {
+	Path string `json:"path"`
+	Hash string `json:"hash"`
+	Type string `json:"type"`
 }
 
 // Calculate MD5 FIle Hash
@@ -55,15 +62,16 @@ func calculatemd5(filePath string) (string, error) {
 
 }
 
-func scan(path string) {
+func scan(path string) []JFile {
 	var files []JFile
+	fmt.Println("Started Scan...")
 	err := filepath.Walk(path, func(filepath string, info os.FileInfo, err error) error {
 		if info.IsDir() == false {
 			md5, err := calculatemd5(filepath)
 			if err != nil {
 				fmt.Println("MD5 Error: "+filepath, err)
 			}
-			f := JFile{path: filepath, hash: md5}
+			f := JFile{Path: filepath, Hash: md5}
 			files = append(files, f)
 		}
 		return nil
@@ -71,13 +79,34 @@ func scan(path string) {
 	if err != nil {
 		panic(err)
 	}
+	return files
+}
 
-	json, _ := json.MarshalIndent(files, "", "    ")
-	err = ioutil.WriteFile("output.json", json, os.ModePerm)
-	if err != nil {
-		panic(err)
+func compare(path string, loaded []JFile) []JFileMismatch {
+	var output []JFileMismatch
+	scan := scan(path)
+	if scan == nil {
+		panic("Error on Scanning FileSystem")
 	}
-	fmt.Println(string(json[:len(json)]))
+	fmt.Println("Started Comparer...")
+	for _, loaded_file := range loaded {
+		found := false
+		for _, scanned_file := range scan {
+			if loaded_file.Path == scanned_file.Path {
+				if loaded_file.Hash != scanned_file.Hash {
+					fmt.Println("Error File Hash mismatch!")
+					output = append(output, JFileMismatch{Path: scanned_file.Path, Hash: scanned_file.Hash, Type: "Mismatch"})
+				}
+				found = true
+				break
+			}
+		}
+		if found == false {
+			fmt.Println("File not Found")
+			output = append(output, JFileMismatch{Path: loaded_file.Path, Hash: loaded_file.Hash, Type: "NotFound"})
+		}
+	}
+	return output
 }
 
 func main() {
@@ -101,6 +130,25 @@ func main() {
 
 	// Execute Scan
 	if cli.check == false {
-		scan(cli.path)
+		json, _ := json.MarshalIndent(scan(cli.path), "", "    ")
+		err := ioutil.WriteFile("output.json", json, os.ModePerm)
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	// Execute Compare
+	if cli.check == true {
+		input, err := ioutil.ReadFile("output.json")
+		if err != nil {
+			panic(err)
+		}
+		var loadedJSON []JFile
+		json.Unmarshal(input, &loadedJSON)
+		json, _ := json.MarshalIndent(compare(cli.path, loadedJSON), "", "    ")
+		err = ioutil.WriteFile("mismatch.json", json, os.ModePerm)
+		if err != nil {
+			panic(err)
+		}
 	}
 }
