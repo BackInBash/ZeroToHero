@@ -1,6 +1,13 @@
 # File Scanner
 CLI Application to verify a File status across multiple repositories.
 
+This Program is avaliable in the following Programming languages:
++ C#
++ Go
++ Java (WIP)
++ C++ (WIP)
++ Rust (WIP)
+
 ## Usage:
 
 Usage as Scanner:
