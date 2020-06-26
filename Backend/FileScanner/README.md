@@ -4,7 +4,7 @@ CLI Application to verify a File status across multiple repositories.
 This Program is avaliable in the following Programming languages:
 + C#
 + Go
-+ Java (WIP)
++ Java
 + C++ (WIP)
 + Rust (WIP)
 
