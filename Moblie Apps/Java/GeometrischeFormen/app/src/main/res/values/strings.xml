@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">GeometrischeFormen</string>
+    <string name="rechteck">Rechteck</string>
+    <string name="dreieck">Dreieck</string>
+    <string name="kreis">Kreis</string>
+</resources>
